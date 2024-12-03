@@ -11,7 +11,7 @@ import SwiftUI
 struct HabitBuddyApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WelcomeView()
         }
     }
 }
