@@ -15,7 +15,7 @@ class AddHabitViewModel: ObservableObject {
     func addNewHabit() -> Bool {
         if (validateNewHabit()) {
             error = ""
-            DeveloperPreview.habits.append(
+            HabitService.shared.addHabit(
                 Habit(id: UUID().uuidString,
                       emoji: emoji,
                       title: title,

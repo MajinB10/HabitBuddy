@@ -27,7 +27,7 @@ class HabitButtonViewModel: ObservableObject {
     }
     
     func deleteHabit() {
-        DeveloperPreview.habits.removeAll(where: {$0.id == habit.id})
+        HabitService.shared.deleteHabit(habit)
         isDeleted = true
         buttonOpacity = 0.3
     }
