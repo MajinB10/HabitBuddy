@@ -36,10 +36,10 @@ struct HabitListView: View {
             // Habit List
             // Button
             
-            LazyVStack {
+            LazyVStack (spacing: 20) {
                 ForEach(viewmodel.habits) { habit in
                     
-                    HabitButtonView()
+                    HabitButtonView(habit: habit)
                     
                 }
             }

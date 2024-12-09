@@ -13,4 +13,5 @@ struct Habit: Identifiable {
     var title: String
     var description: String
     var streak: Int
+    var isDone: Bool = false
 }
