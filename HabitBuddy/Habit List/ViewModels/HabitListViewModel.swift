@@ -10,10 +10,10 @@ import Foundation
 
 class HabitListViewModel: ObservableObject {
     @Published var habits = [Habit]()
-    @Published var dateString: String = Date().formatted()
+    @Published var dateString: String = ""
     
     init() {
-        habits = DeveloperPreview.habits
+        refreshHabits()
     }
     
     func updateDateString() -> String {
@@ -26,6 +26,11 @@ class HabitListViewModel: ObservableObject {
     }
     
     func onAddHabitDismissed() {
+        refreshHabits()
+
+    }
+    
+    func refreshHabits() {
         habits = DeveloperPreview.habits
 
     }
