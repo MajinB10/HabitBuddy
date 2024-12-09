@@ -19,10 +19,11 @@ struct HabitListView: View {
             Text("Dont forget what made you start this!\nYou can get through It!")
                 .font(.title)
                 .fontWeight(.bold)
+                .padding(.top, 30)
             
             VStack (alignment: .leading, spacing: 5) {
                 // Today's Date
-                Text("December 3rd, 2024")
+                Text(viewmodel.updateDateString())
                     .font(.title2)
                     .fontWeight(.semibold)
                     .foregroundStyle(.cyan)
