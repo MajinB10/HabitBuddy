@@ -25,7 +25,10 @@ class HabitListViewModel: ObservableObject {
         return formatter.string(from: currentDate)
     }
     
-    
+    func onAddHabitDismissed() {
+        habits = DeveloperPreview.habits
+
+    }
     
 }
 

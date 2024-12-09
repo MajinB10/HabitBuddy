@@ -70,7 +70,10 @@ struct HabitListView: View {
             }
             .padding()
         }
-        .sheet(isPresented: $showHabitForm, content: {
+        .sheet(isPresented: $showHabitForm,
+               onDismiss:
+                viewmodel.onAddHabitDismissed,
+               content: {
             AddHabitView()
                 .presentationDragIndicator(.visible)
         })

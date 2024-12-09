@@ -10,7 +10,7 @@ import Foundation
 
 class DeveloperPreview {
     // Mock Habit Object
-    static let habits: [Habit] = [
+    static var habits: [Habit] = [
         .init(
             id: NSUUID().uuidString,
             emoji: "🧘🏼‍♀️",
