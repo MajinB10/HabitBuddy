@@ -13,5 +13,5 @@ struct Habit: Identifiable, Encodable, Decodable {
     var title: String
     var description: String
     var streak: Int
-    var isDone: Bool = false
+    var lastDateDone: Date?
 }
