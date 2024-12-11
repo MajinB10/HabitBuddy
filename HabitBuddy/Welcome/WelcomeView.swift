@@ -12,6 +12,9 @@ struct WelcomeView: View {
     let screenHeight = UIScreen.main.bounds.height
     
     @State private var isGlowing = false
+    @State private var animateRedCircle = false
+    @State private var animateGreenCircle = false
+    @State private var animateBlueCircle = false
     
     var body: some View {
         NavigationView {
@@ -20,7 +23,7 @@ struct WelcomeView: View {
                 Color(red: 0.09, green: 0.09, blue: 0.13)
                     .ignoresSafeArea()
                 
-                // Abstract Shapes
+                // Animated Circles
                 ZStack {
                     // Red circle top-left
                     Circle()
@@ -28,6 +31,12 @@ struct WelcomeView: View {
                         .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
                         .offset(x: -screenWidth * 0.3, y: -screenHeight * 0.4)
                         .blur(radius: 20)
+                        .scaleEffect(animateRedCircle ? 1.1 : 0.9)
+                        .rotationEffect(.degrees(animateRedCircle ? 10 : -10))
+                        .animation(
+                            Animation.easeInOut(duration: 3).repeatForever(autoreverses: true),
+                            value: animateRedCircle
+                        )
                     
                     // Green circle middle
                     Circle()
@@ -35,6 +44,12 @@ struct WelcomeView: View {
                         .frame(width: screenWidth * 0.7, height: screenWidth * 0.7)
                         .offset(x: screenWidth * 0.4, y: -screenHeight * 0.1)
                         .blur(radius: 20)
+                        .scaleEffect(animateGreenCircle ? 1.05 : 0.95)
+                        .rotationEffect(.degrees(animateGreenCircle ? -15 : 15))
+                        .animation(
+                            Animation.easeInOut(duration: 3.5).repeatForever(autoreverses: true),
+                            value: animateGreenCircle
+                        )
                     
                     // Blue circle bottom-left
                     Circle()
@@ -42,6 +57,17 @@ struct WelcomeView: View {
                         .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
                         .offset(x: -screenWidth * 0.35, y: screenHeight * 0.3)
                         .blur(radius: 20)
+                        .scaleEffect(animateBlueCircle ? 1.2 : 1.0)
+                        .rotationEffect(.degrees(animateBlueCircle ? 20 : -20))
+                        .animation(
+                            Animation.easeInOut(duration: 4).repeatForever(autoreverses: true),
+                            value: animateBlueCircle
+                        )
+                }
+                .onAppear {
+                    animateRedCircle = true
+                    animateGreenCircle = true
+                    animateBlueCircle = true
                 }
                 
                 VStack(spacing: 20) {
@@ -72,7 +98,7 @@ struct WelcomeView: View {
                     
                     Spacer()
                     
-                    // Get Started Button (no animation, direct navigation)
+                    // Get Started Button
                     NavigationLink(destination: HabitListView().navigationBarBackButtonHidden(true)) {
                         Text("Get started")
                             .foregroundColor(.white)

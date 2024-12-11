@@ -16,6 +16,23 @@ struct HabitListView: View {
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
     
+    // Helper function to generate dates for the current week (Monday to Sunday)
+    func generateWeekDates() -> [String] {
+        let calendar = Calendar.current
+        let today = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd\nEEE" // Format as "15\nWed"
+        
+        // Find the start of the week (Monday)
+        let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today))!
+        return (0..<7).compactMap { offset in
+            if let date = calendar.date(byAdding: .day, value: offset, to: weekStart) {
+                return formatter.string(from: date)
+            }
+            return nil
+        }
+    }
+    
     var body: some View {
         ZStack {
             // Background
@@ -49,9 +66,10 @@ struct HabitListView: View {
                     // Horizontal Date Selector
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 20) {
-                            ForEach(["13\nMon", "14\nTues", "15\nWed", "16\nThurs", "17\nFri", "18\nSat", "19\nSun"], id: \.self) { day in
+                            ForEach(generateWeekDates(), id: \.self) { day in
                                 VStack {
-                                    if day.contains("15") {
+                                    // Highlight the current date
+                                    if day.contains(viewmodel.updateDateString().prefix(2)) {
                                         Text(day)
                                             .font(.subheadline)
                                             .multilineTextAlignment(.center)
