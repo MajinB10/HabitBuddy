@@ -66,7 +66,7 @@ SkyCast is a work in progress, with exciting new features planned to enhance the
 
 1. **Clone the Repository**:  
    bash
-   `git clone https://github.com/YourUsername/SkyCast.git`
+   `git clone https://github.com/MajinB10/HabitBuddy.git`
 
 2.	Open in Xcode: Open the project file in Xcode.
 3.	Build and Run: Use a simulator or your iOS device to explore SkyCast’s features.
