@@ -13,7 +13,7 @@ class HabitListViewModel: ObservableObject {
     @Published var globalStreak = 0
     @Published var habits = [Habit]()
     @Published var dateString: String = ""
-    
+
     let UIchange = PassthroughSubject<Void, Never>()
     private var cancellables = Set<AnyCancellable>()
     
@@ -22,46 +22,51 @@ class HabitListViewModel: ObservableObject {
         refreshGlobalStreak()
         dateString = updateDateString()
         
-        // Event Handlers
         HabitService.shared.habitServiceChanged
             .receive(on: DispatchQueue.main)
-            .sink{ [weak self] _ in
+            .sink { [weak self] _ in
                 self?.refreshHabits()
                 self?.refreshGlobalStreak()
             }
             .store(in: &cancellables)
         
-        if(habits.count == 0) {
+        if habits.isEmpty {
             HabitService.shared.resetGlobalStreak()
         }
     }
     
     func updateDateString() -> String {
-        let currentDate = Date()
         let formatter = DateFormatter()
-        formatter.timeStyle = .none
         formatter.dateStyle = .long
-
-        return formatter.string(from: currentDate)
+        return formatter.string(from: Date())
     }
     
     func onAddHabitDismissed() {
         refreshHabits()
-
     }
     
     func refreshHabits() {
         habits = HabitService.shared.retrieveHabits()
+        updateDailyProgress()
         UIchange.send()
-        
-
     }
     
     func refreshGlobalStreak() {
         globalStreak = HabitService.shared.globalStreak
         UIchange.send()
-
     }
     
+    private func updateDailyProgress() {
+        let completedHabits = habits.filter { habit in
+            guard let lastDateDone = habit.lastDateDone else { return false }
+            return Calendar.current.isDateInToday(lastDateDone)
+        }.count
+        
+        HabitService.shared.updateProgress(
+            for: Date(),
+            completedHabits: completedHabits,
+            totalHabits: habits.count
+        )
+    }
 }
 

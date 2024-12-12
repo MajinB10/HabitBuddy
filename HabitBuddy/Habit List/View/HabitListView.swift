@@ -124,25 +124,38 @@ struct HabitListView: View {
                             HabitButtonView(habit: habit, isEditMode: $isEditMode)
                         }
                     }
-                    
-                    // Add Habit Button (Centered)
-                    Button(action: {
-                        showHabitForm.toggle()
-                    }) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(Font.system(size: 50))
-                            .foregroundStyle(.orange)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 20)
-                    
-                    Spacer()
                 }
                 .padding()
             }
-            .onAppear {
-                randomizeMotivationalQuote() // Set initial motivational header
-                startMotivationalQuoteTimer() // Start periodic updates
+            
+            VStack {
+                Spacer()
+                
+                // Add Habit Button
+                Button(action: {
+                    showHabitForm.toggle()
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(Font.system(size: 50))
+                        .foregroundStyle(.orange)
+                }
+                .padding(.bottom, 10)
+                
+                // Charts Navigation Button
+                NavigationLink(destination: ChartsView()) {
+                    HStack {
+                        Image(systemName: "chart.bar.fill")
+                            .foregroundColor(.orange)
+                            .font(.system(size: 20))
+                        Text("View Charts")
+                            .foregroundColor(.orange)
+                            .font(.headline)
+                    }
+                    .padding()
+                    .background(Color(red: 0.13, green: 0.13, blue: 0.17))
+                    .cornerRadius(15)
+                }
+                .padding(.bottom, 30)
             }
             .sheet(isPresented: $showHabitForm,
                    onDismiss: viewmodel.onAddHabitDismissed) {
@@ -158,6 +171,10 @@ struct HabitListView: View {
                     .foregroundColor(.white)
                 }
             }
+        }
+        .onAppear {
+            randomizeMotivationalQuote() // Set initial motivational header
+            startMotivationalQuoteTimer() // Start periodic updates
         }
     }
     
