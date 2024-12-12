@@ -178,6 +178,12 @@ struct EmojiPickerView: View {
                     .ignoresSafeArea()
                 
                 ScrollView {
+                    Text("Pick an Emoji")
+                        .foregroundStyle(.white)
+                        .font(.title)
+                        .fontWeight(.bold)
+//                        .frame(maxWidth: .infinity ,alignment: .leading)
+
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5)) {
                         ForEach(emojiOptions, id: \.self) { emoji in
                             Text(emoji)
@@ -194,7 +200,7 @@ struct EmojiPickerView: View {
                     .padding()
                 }
             }
-            .navigationTitle("Pick an Emoji")
+//            .navigationTitle("Pick an Emoji")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") {
@@ -205,4 +211,9 @@ struct EmojiPickerView: View {
             }
         }
     }
+}
+
+
+#Preview {
+    AddHabitView()
 }

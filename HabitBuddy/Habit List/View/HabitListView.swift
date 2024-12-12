@@ -12,9 +12,21 @@ struct HabitListView: View {
     @StateObject var viewmodel = HabitListViewModel()
     @State var showHabitForm: Bool = false
     @State var isEditMode: Bool = false
-
+    @State private var currentMotivationalQuote: String = "" // For random motivational headers
+    
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
+    
+    // Array of motivational headers
+    private let motivationalQuotes = [
+        "Small Habits, Big Changes ✨",
+        "Consistency is Key 🔑",
+        "One Step at a Time 🪜",
+        "You’ve Got This 💪",
+        "Progress, Not Perfection 🚀",
+        "Great Things Start Small 🌟",
+        "Keep the Streak Alive 🔥"
+    ]
     
     // Helper function to generate dates for the current week (Monday to Sunday)
     func generateWeekDates() -> [String] {
@@ -33,6 +45,13 @@ struct HabitListView: View {
         }
     }
     
+    // Function to randomize the motivational header
+    private func randomizeMotivationalQuote() {
+        if let randomQuote = motivationalQuotes.randomElement() {
+            currentMotivationalQuote = randomQuote
+        }
+    }
+    
     var body: some View {
         ZStack {
             // Background
@@ -43,14 +62,17 @@ struct HabitListView: View {
                 VStack(alignment: .leading, spacing: 30) {
                     
                     // Motivational Header
-                    Text("Small Habits, Big Changes ✨")
-                        .font(.system(size: 32, weight: .bold))
+                    Text(currentMotivationalQuote)
+                        .font(.system(size: 25, weight: .bold))
                         .foregroundColor(.white)
                         .padding(.top, 30)
+                        .onTapGesture {
+                            randomizeMotivationalQuote() // Refresh header on tap
+                        }
                     
                     // Date & Streak section
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(viewmodel.updateDateString()) // dynamic date
+                        Text(viewmodel.updateDateString()) // Dynamic date
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(Color(red: 0.6, green: 0.8, blue: 0.4))
@@ -111,6 +133,9 @@ struct HabitListView: View {
                     Spacer()
                 }
                 .padding()
+            }
+            .onAppear {
+                randomizeMotivationalQuote() // Set initial motivational header
             }
             .sheet(isPresented: $showHabitForm,
                    onDismiss: viewmodel.onAddHabitDismissed) {
