@@ -13,7 +13,8 @@ struct HabitListView: View {
     @State var showHabitForm: Bool = false
     @State var isEditMode: Bool = false
     @State private var currentMotivationalQuote: String = "" // For random motivational headers
-    
+    @State private var animateHeader: Bool = false // State variable for animation
+
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
     
@@ -24,6 +25,7 @@ struct HabitListView: View {
         "One Step at a Time 🪜",
         "You’ve Got This 💪",
         "Progress, Not Perfection 🚀",
+        "Build Today, Thrive Tomorrow 🌱",
         "Great Things Start Small 🌟",
         "Keep the Streak Alive 🔥"
     ]
@@ -49,6 +51,10 @@ struct HabitListView: View {
     private func randomizeMotivationalQuote() {
         if let randomQuote = motivationalQuotes.randomElement() {
             currentMotivationalQuote = randomQuote
+            animateHeader = false // Reset animation state
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                animateHeader = true // Trigger animation
+            }
         }
     }
     
@@ -61,14 +67,14 @@ struct HabitListView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 30) {
                     
-                    // Motivational Header
+                    // Motivational Header with Animation
                     Text(currentMotivationalQuote)
                         .font(.system(size: 25, weight: .bold))
                         .foregroundColor(.white)
                         .padding(.top, 30)
-                        .onTapGesture {
-                            randomizeMotivationalQuote() // Refresh header on tap
-                        }
+                        .opacity(animateHeader ? 1.0 : 0.0) // Fade-in effect
+                        .scaleEffect(animateHeader ? 1.0 : 0.8) // Scaling effect
+                        .animation(.spring(response: 0.5, dampingFraction: 0.5), value: animateHeader)
                     
                     // Date & Streak section
                     VStack(alignment: .leading, spacing: 8) {
@@ -136,6 +142,7 @@ struct HabitListView: View {
             }
             .onAppear {
                 randomizeMotivationalQuote() // Set initial motivational header
+                startMotivationalQuoteTimer() // Start periodic updates
             }
             .sheet(isPresented: $showHabitForm,
                    onDismiss: viewmodel.onAddHabitDismissed) {
@@ -151,6 +158,13 @@ struct HabitListView: View {
                     .foregroundColor(.white)
                 }
             }
+        }
+    }
+    
+    // Timer-based quote refresh
+    private func startMotivationalQuoteTimer() {
+        Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { _ in
+            randomizeMotivationalQuote()
         }
     }
 }
