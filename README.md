@@ -95,7 +95,7 @@ Contribution Steps:
 
 ## 📬 Contact
 
-We’d love to hear your feedback and ideas! Reach out to us:
+I’d love to hear your feedback and ideas! Reach out to me:
 	•	GitHub: MajinB10
 
 HabitBuddy is more than an app; it’s your partner in building the life you envision. Let’s create and celebrate better habits together!
