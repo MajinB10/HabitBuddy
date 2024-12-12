@@ -54,6 +54,7 @@ extension HabitService {
     // Delete Habit
     func deleteHabit(_ habit: Habit) {
         habits.removeAll(where: {$0.id == habit.id})
+        saveHabits()
         updateGlobalStreak()
     }
     

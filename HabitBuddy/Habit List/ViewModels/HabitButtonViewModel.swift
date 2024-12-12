@@ -21,6 +21,7 @@ class HabitButtonViewModel: ObservableObject {
 // Delete Function
 extension HabitButtonViewModel {
     func deleteHabit() {
+        print("Deleting Habit: \(habit.title)")
         HabitService.shared.deleteHabit(habit)
         isDeleted = true
     }
