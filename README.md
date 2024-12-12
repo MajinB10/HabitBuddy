@@ -35,6 +35,7 @@ HabitBuddy offers an array of features to make habit tracking easy and motivatin
 3. **Individual Habit Streaks**: Track streaks for each habit to monitor your consistency and progress.
 4. **Overall Streak Tracker**: Get a holistic view of your habits with an overall streak metric, keeping you motivated to maintain consistency across all your goals.
 5. **User-Friendly Interface**: Designed with simplicity in mind, making it accessible for users of all experience levels.
+6. **Emoji Picker**: Designed an Emoji Picker for easy usage of emojis for dedicated Habits.  
 
 ---
 
