@@ -12,6 +12,7 @@ import Combine
 class HabitService {
     @AppStorage("GLOBAL_STREAK_KEY") var globalStreak: Int = 0
     @AppStorage("HABITS_KEY") var savedHabits: Data = Data()
+    @AppStorage("LAST_GLOBAL_STREAK_DATE") var lastGlobalStreakDate: Date?
     private var habits: [Habit] = []
     
     let habitServiceChanged = PassthroughSubject<Void, Never>()
@@ -25,65 +26,67 @@ class HabitService {
 
 // Data Conversion
 extension HabitService {
-    // Save
     func saveHabits() {
-        // Convert to JSON
         guard let habitJSON = try? JSONEncoder().encode(habits) else { return }
-        
         self.savedHabits = habitJSON
-        
         habitServiceChanged.send()
     }
     
-    // Retrieve
-    func retrieveHabits() -> [Habit]{
+    func retrieveHabits() -> [Habit] {
         guard let decodeHabit = try? JSONDecoder().decode([Habit].self, from: savedHabits) else { return [] }
-        
         return decodeHabit
     }
 }
 
 // Data Queries
 extension HabitService {
-    // Add Habit
     func addHabit(_ habit: Habit) {
         habits.append(habit)
         saveHabits()
+        resetGlobalStreak()
     }
     
-    // Delete Habit
     func deleteHabit(_ habit: Habit) {
-        habits.removeAll(where: {$0.id == habit.id})
+        habits.removeAll(where: { $0.id == habit.id })
         saveHabits()
         updateGlobalStreak()
     }
     
-    // Update Specific Habit
-    func updateHabit (forHabit habit: Habit) {
-        guard let index = habits.firstIndex(where: {$0.id == habit.id} ) else { return }
-        
+    func updateHabit(forHabit habit: Habit) {
+        guard let index = habits.firstIndex(where: { $0.id == habit.id }) else { return }
         habits[index] = habit
-        
         saveHabits()
-        
+        updateGlobalStreak()
     }
     
-    // Increase Global Streak
     func increaseGlobalStreak() {
         globalStreak += 1
         habitServiceChanged.send()
-        
     }
     
-    // Reset Gloabal Streak
     func resetGlobalStreak() {
         globalStreak = 0
         habitServiceChanged.send()
     }
     
     func updateGlobalStreak() {
-        if (habits.count == 0) {
+        // Check if all habits are done for today
+        let allHabitsDoneToday = habits.allSatisfy { habit in
+            guard let lastDateDone = habit.lastDateDone else { return false }
+            return isSameDay(date1: lastDateDone, date2: Date())
+        }
+
+        // Increment global streak if all habits are done and not already incremented today
+        if allHabitsDoneToday, lastGlobalStreakDate == nil || !isSameDay(date1: lastGlobalStreakDate!, date2: Date()) {
+            increaseGlobalStreak()
+            lastGlobalStreakDate = Date() // Update the last streak increment date
+        } else if habits.isEmpty {
             resetGlobalStreak()
         }
+    }
+
+    private func isSameDay(date1: Date, date2: Date) -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDate(date1, inSameDayAs: date2)
     }
 }
