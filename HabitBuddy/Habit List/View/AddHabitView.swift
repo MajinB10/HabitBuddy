@@ -12,6 +12,8 @@ struct AddHabitView: View {
     @StateObject var viewModel = AddHabitViewModel()
     @Environment(\.presentationMode) var presentationMode
     @State private var animateCircles = false
+    @State private var showEmojiPicker = false
+    @State private var selectedEmoji: String = "👋🏼" // Temporary state for emoji selection
     
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
@@ -24,7 +26,6 @@ struct AddHabitView: View {
             
             // Animated Circles
             ZStack {
-                // Red circle top-left
                 Circle()
                     .fill(Color(red: 0.95, green: 0.4, blue: 0.35))
                     .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
@@ -33,7 +34,6 @@ struct AddHabitView: View {
                     .scaleEffect(animateCircles ? 1.05 : 0.95)
                     .animation(.easeInOut(duration: 3).repeatForever(autoreverses: true), value: animateCircles)
                 
-                // Green circle middle-right
                 Circle()
                     .fill(Color(red: 0.6, green: 0.8, blue: 0.4))
                     .frame(width: screenWidth * 0.7, height: screenWidth * 0.7)
@@ -42,7 +42,6 @@ struct AddHabitView: View {
                     .scaleEffect(animateCircles ? 0.95 : 1.05)
                     .animation(.easeInOut(duration: 3).delay(1).repeatForever(autoreverses: true), value: animateCircles)
                 
-                // Blue circle bottom-left
                 Circle()
                     .fill(Color(red: 0.3, green: 0.6, blue: 0.9))
                     .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
@@ -58,20 +57,29 @@ struct AddHabitView: View {
             VStack(alignment: .center, spacing: 20) {
                 Spacer()
                 
-                // Emoji Picker
-                TextField("👋🏼", text: $viewModel.emoji.max(1))
-                    .font(.system(size: 60))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color(red: 0.13, green: 0.13, blue: 0.17))
-                    )
-                    .frame(width: 100)
-                    .padding(.top, 50)
+                // Emoji Display
+                Button(action: {
+                    showEmojiPicker = true // Show emoji picker on button tap
+                }) {
+                    Text(selectedEmoji)
+                        .font(.system(size: 60))
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color(red: 0.13, green: 0.13, blue: 0.17))
+                        )
+                        .frame(width: 100)
+                        .foregroundColor(.white)
+                        .padding(.top, 50)
+                }
+                .sheet(isPresented: $showEmojiPicker) {
+                    EmojiPickerView(selectedEmoji: $selectedEmoji)
+                        .onDisappear {
+                            viewModel.emoji = selectedEmoji // Finalize emoji selection
+                        }
+                }
                 
-                // Title field with custom placeholder
+                // Title Field
                 ZStack(alignment: .leading) {
                     TextField("", text: $viewModel.title.max(25))
                         .font(.title)
@@ -82,17 +90,17 @@ struct AddHabitView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(Color(red: 0.13, green: 0.13, blue: 0.17))
                         )
-
+                    
                     if viewModel.title.isEmpty {
                         Text("Title")
                             .font(.headline)
                             .fontWeight(.bold)
-                            .foregroundColor(.white) // Bright placeholder for better visibility
+                            .foregroundColor(.white.opacity(0.6))
                             .padding(.leading, 14)
                     }
                 }
                 
-                // Description field with custom placeholder
+                // Description Field
                 ZStack(alignment: .leading) {
                     TextField("", text: $viewModel.description.max(70), axis: .vertical)
                         .font(.title2)
@@ -103,14 +111,14 @@ struct AddHabitView: View {
                                 .fill(Color(red: 0.13, green: 0.13, blue: 0.17))
                         )
                         .multilineTextAlignment(.leading)
-
+                    
                     if viewModel.description.isEmpty {
                         Text("Description")
                             .font(.headline)
-                            .foregroundColor(.white) // Bright placeholder
+                            .foregroundColor(.white.opacity(0.6))
                             .padding(.leading, 14)
                     }
-                                    }
+                }
                 
                 // Error Message
                 if !viewModel.error.isEmpty {
@@ -153,6 +161,48 @@ extension Binding where Value == String {
     }
 }
 
-#Preview {
-    AddHabitView()
+// Emoji Picker View
+struct EmojiPickerView: View {
+    @Binding var selectedEmoji: String
+    let emojiOptions = [
+        "👋🏼", "🔥", "🌟", "✅", "💪", "📚", "🎯", "💼", "🧘", "🏃‍♂️",
+        "🎉", "❤️", "🙌", "😎", "👍", "🥳", "✨", "🌈", "🍀", "🎵"
+    ]
+    @Environment(\.dismiss) private var dismiss // For dismissing the sheet
+    
+    var body: some View {
+        NavigationView {
+            ZStack {
+                // Dark Background
+                Color(red: 0.09, green: 0.09, blue: 0.13)
+                    .ignoresSafeArea()
+                
+                ScrollView {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5)) {
+                        ForEach(emojiOptions, id: \.self) { emoji in
+                            Text(emoji)
+                                .font(.largeTitle)
+                                .padding()
+                                .background(selectedEmoji == emoji ? Color.orange : Color.clear)
+                                .cornerRadius(10)
+                                .onTapGesture {
+                                    selectedEmoji = emoji // Update the selected emoji
+                                    dismiss() // Dismiss the sheet after selection
+                                }
+                        }
+                    }
+                    .padding()
+                }
+            }
+            .navigationTitle("Pick an Emoji")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") {
+                        dismiss() // Allow manual dismissal
+                    }
+                    .foregroundColor(.white)
+                }
+            }
+        }
+    }
 }
