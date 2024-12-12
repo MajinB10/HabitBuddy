@@ -10,11 +10,13 @@ import SwiftUI
 import Combine
 
 class HabitService {
+    // MARK: - Properties
+    
     @AppStorage("GLOBAL_STREAK_KEY") var globalStreak: Int = 0
     @AppStorage("HABITS_KEY") var savedHabits: Data = Data()
     @AppStorage("LAST_GLOBAL_STREAK_DATE") var lastGlobalStreakDate: Date?
     @AppStorage("HABIT_PROGRESS_KEY") private var savedProgress: Data = Data()
-
+    
     private(set) var habitProgress: [HabitProgress] = [] // Progress tracking for charts
     private var habits: [Habit] = []
     
@@ -22,7 +24,9 @@ class HabitService {
     
     static let shared = HabitService()
     
-    init () {
+    // MARK: - Initializer
+    
+    init() {
         habits = retrieveHabits()
         habitProgress = retrieveProgress()
     }
@@ -138,5 +142,38 @@ extension HabitService {
     private func isSameDay(date1: Date, date2: Date) -> Bool {
         let calendar = Calendar.current
         return calendar.isDate(date1, inSameDayAs: date2)
+    }
+}
+
+// MARK: - Helper Functions for Metrics
+extension HabitService {
+    // Aggregate completion breakdown for Pie Chart
+    func getCompletionBreakdown() -> (completed: Int, incomplete: Int) {
+        let completed = habitProgress.reduce(0) { $0 + $1.completedHabits }
+        let total = habitProgress.reduce(0) { $0 + $1.totalHabits }
+        return (completed, total - completed)
+    }
+
+    // Identify best and worst days
+    func getBestAndWorstDays() -> (bestDay: String, worstDay: String) {
+        guard let bestDay = habitProgress.max(by: { ($0.completedHabits * 100) / max($0.totalHabits, 1) < ($1.completedHabits * 100) / max($1.totalHabits, 1) }),
+              let worstDay = habitProgress.min(by: { ($0.completedHabits * 100) / max($0.totalHabits, 1) < ($1.completedHabits * 100) / max($1.totalHabits, 1) }) else {
+            return ("N/A", "N/A")
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"
+        return (formatter.string(from: bestDay.date), formatter.string(from: worstDay.date))
+    }
+
+    // Individual habit progress for the week
+    func getHabitProgressForWeek() -> [String: Int] {
+        var habitProgressDict: [String: Int] = [:]
+        for habit in habits {
+            let weeklyCompleted = habitProgress.filter { progress in
+                isSameDay(date1: progress.date, date2: habit.lastDateDone ?? Date())
+            }.count
+            habitProgressDict[habit.title] = (weeklyCompleted * 100) / max(1, habitProgress.count)
+        }
+        return habitProgressDict
     }
 }
