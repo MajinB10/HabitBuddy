@@ -51,21 +51,28 @@ struct ChartsView: View {
 
     // MARK: - Sections
     private func createHabitProgressSection() -> some View {
-        ChartCard(title: "Habit Progress") {
+        let averageProgress = habitProgressData.isEmpty ? 0 :
+            habitProgressData.map { $0.progress }.reduce(0, +) / habitProgressData.count
+        
+        return VStack(spacing: 12) {
+            Text("Habit Progress")
+                .font(.title)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+            
+            // Average Progress Label
+            Text("Average Progress: \(averageProgress)%")
+                .font(.headline)
+                .foregroundColor(.white.opacity(0.7))
+                .padding(.bottom, 5)
+
+            // Bar Chart
             Chart(habitProgressData) { data in
-                BarMark(x: .value("Day", data.date), y: .value("Progress", data.progress))
-                    .foregroundStyle(Color.orange)
-                    .annotation(position: .top) {
-                        Text("\(data.progress)%")
-                            .foregroundColor(.white)
-                            .font(.caption)
-                    }
-            }
-            .chartXAxis {
-                AxisMarks(position: .bottom) {
-                    AxisValueLabel()
-                        .foregroundStyle(.white)
-                }
+                BarMark(
+                    x: .value("Day", data.date),
+                    y: .value("Progress", data.progress)
+                )
+                .foregroundStyle(Color.orange)
             }
             .chartYAxis {
                 AxisMarks(position: .leading) {
@@ -73,6 +80,17 @@ struct ChartsView: View {
                         .foregroundStyle(.white)
                 }
             }
+            .chartXAxis {
+                AxisMarks(position: .bottom) {
+                    AxisValueLabel()
+                        .foregroundStyle(.white)
+                }
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.black.opacity(0.6))
+            )
         }
     }
 
