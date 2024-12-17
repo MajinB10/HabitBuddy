@@ -21,6 +21,7 @@ HabitBuddy leverages the latest tools in Apple’s development ecosystem for a s
 - **Core Data**: For efficient data storage and persistence of habit tracking.
 - **AppStorage**: Ensuring lightweight and seamless data management for key features.
 - **Charts Framework**: For visually engaging habit progress and analytics.
+- **Animation API**: Smooth animations for enhanced UI interactivity.
 
 These technologies work in harmony to deliver a polished and intuitive app experience.
 
@@ -30,17 +31,20 @@ These technologies work in harmony to deliver a polished and intuitive app exper
 
 HabitBuddy offers an extensive set of features designed to make habit tracking motivating and easy:
 
-### Core Features
+### **Core Features**
 1. **Add New Habits**: Quickly create habits tailored to your goals with custom details like emojis and descriptions.
 2. **Remove Habits**: Keep your list relevant by removing habits no longer needed.
 3. **Individual Habit Streaks**: Monitor streaks for each habit and visualize your consistency.
 4. **Overall Streak Tracker**: See your overall progress across all habits in a single metric.
 5. **Emoji Picker**: Make habits visually appealing with easy emoji selection for better identification.
-6. **Completion Breakdown Analytics**: View your completed and incomplete habits via a visual pie chart.
-7. **Weekly Habit Progress**: Track daily completion progress with a bar chart.
-8. **Streak Trends**: Visualize your consistency and streaks over time using a line chart.
-9. **Best & Worst Days**: Identify your most productive and least productive days with easy-to-understand highlights.
-10. **Individual Habit Performance**: View detailed horizontal bar charts showing the progress of each habit.
+
+### **Analytics & Visualizations**
+6. **Completion Breakdown Analytics**: View your completed and incomplete habits via a **visual pie chart**.
+7. **Weekly Habit Progress**: Track daily completion progress with an **animated bar chart**.
+8. **Streak Trends**: Visualize your consistency and streaks over time using a **line chart**.
+9. **Best & Worst Days Logic**: Identify your most productive and least productive days dynamically.
+10. **Animated Enlarged Views**: Expand charts into full-screen views with smooth **scaling and fade animations**.
+11. **Average Progress Metric**: Quickly view the **average progress** across all habits for the week.
 
 ---
 
@@ -71,6 +75,7 @@ We’re continuously working to expand HabitBuddy with innovative features:
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
+
 bash
 `git clone https://github.com/MajinB10/HabitBuddy.git`
 
@@ -98,5 +103,7 @@ Contribution Steps:
 I’d love to hear your feedback and ideas! Reach out to me:
 	•	GitHub: MajinB10
 
-HabitBuddy is more than an app; it’s your partner in building the life you envision. Let’s create and celebrate better habits together!
+## 💡 Final Words
+
+HabitBuddy is more than an app; it’s your partner in building the life you envision. With its sleek UI, enhanced analytics, and intuitive features, let’s create and celebrate better habits together! 🚀
 
