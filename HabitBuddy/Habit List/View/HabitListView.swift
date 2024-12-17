@@ -12,8 +12,8 @@ struct HabitListView: View {
     @StateObject var viewmodel = HabitListViewModel()
     @State var showHabitForm: Bool = false
     @State var isEditMode: Bool = false
-    @State private var currentMotivationalQuote: String = "" // For random motivational headers
-    @State private var animateHeader: Bool = false // State variable for animation
+    @State private var currentMotivationalQuote: String = ""
+    @State private var animateHeader: Bool = false
 
     let screenWidth = UIScreen.main.bounds.width
     let screenHeight = UIScreen.main.bounds.height
@@ -30,14 +30,13 @@ struct HabitListView: View {
         "Keep the Streak Alive 🔥"
     ]
     
-    // Helper function to generate dates for the current week (Monday to Sunday)
+    // Helper function to generate dates for the current week (Mon to Sun)
     func generateWeekDates() -> [String] {
         let calendar = Calendar.current
         let today = Date()
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd\nEEE" // Format as "15\nWed"
+        formatter.dateFormat = "d\nEEE"
         
-        // Find the start of the week (Monday)
         let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: today))!
         return (0..<7).compactMap { offset in
             if let date = calendar.date(byAdding: .day, value: offset, to: weekStart) {
@@ -47,13 +46,12 @@ struct HabitListView: View {
         }
     }
     
-    // Function to randomize the motivational header
     private func randomizeMotivationalQuote() {
         if let randomQuote = motivationalQuotes.randomElement() {
             currentMotivationalQuote = randomQuote
-            animateHeader = false // Reset animation state
+            animateHeader = false
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                animateHeader = true // Trigger animation
+                animateHeader = true
             }
         }
     }
@@ -64,86 +62,115 @@ struct HabitListView: View {
             Color(red: 0.09, green: 0.09, blue: 0.13)
                 .ignoresSafeArea()
             
-            ScrollView {
-                VStack(alignment: .leading, spacing: 30) {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 30) {
                     
-                    // Motivational Header with Animation
-                    Text(currentMotivationalQuote)
-                        .font(.system(size: 25, weight: .bold))
-                        .foregroundColor(.white)
-                        .padding(.top, 30)
-                        .opacity(animateHeader ? 1.0 : 0.0) // Fade-in effect
-                        .scaleEffect(animateHeader ? 1.0 : 0.8) // Scaling effect
-                        .animation(.spring(response: 0.5, dampingFraction: 0.5), value: animateHeader)
-                    
-                    // Date & Streak section
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(viewmodel.updateDateString()) // Dynamic date
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(Color(red: 0.6, green: 0.8, blue: 0.4))
+                    // TOP SECTION
+                    VStack(spacing: 20) {
+                        // Motivational Header
+                        Text(currentMotivationalQuote)
+                            .font(.system(size: 26, weight: .bold))
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 40)
+                            .opacity(animateHeader ? 1.0 : 0.0)
+                            .scaleEffect(animateHeader ? 1.0 : 0.8)
+                            .animation(.spring(response: 0.5, dampingFraction: 0.5), value: animateHeader)
                         
-                        HStack(spacing: 5) {
-                            Text("🔥")
-                            Text("\(viewmodel.globalStreak) \(viewmodel.globalStreak == 1 ? "day" : "days") Streak")
-                                .foregroundColor(.white)
-                                .font(.body)
-                        }
-                    }
-                    
-                    // Horizontal Date Selector
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 20) {
-                            ForEach(generateWeekDates(), id: \.self) { day in
-                                VStack {
-                                    // Highlight the current date
-                                    if day.contains(viewmodel.updateDateString().prefix(2)) {
-                                        Text(day)
-                                            .font(.subheadline)
-                                            .multilineTextAlignment(.center)
-                                            .foregroundColor(.white)
-                                            .padding(.vertical, 10)
-                                            .padding(.horizontal, 20)
-                                            .background(Color(red: 1.0, green: 0.4, blue: 0.3))
-                                            .cornerRadius(20)
-                                    } else {
-                                        Text(day)
-                                            .font(.subheadline)
-                                            .multilineTextAlignment(.center)
-                                            .foregroundColor(.white.opacity(0.7))
-                                    }
-                                }
+                        // Date & Streak
+                        VStack(spacing: 5) {
+                            Text(viewmodel.updateDateString())
+                                .font(.title2.weight(.semibold))
+                                .foregroundColor(Color(red: 0.6, green: 0.8, blue: 0.4))
+                            
+                            HStack(spacing: 5) {
+                                Text("🔥")
+                                Text("\(viewmodel.globalStreak) \(viewmodel.globalStreak == 1 ? "day" : "days") Streak")
+                                    .foregroundColor(.white)
+                                    .font(.subheadline)
                             }
                         }
-                        .padding(.vertical, 10)
+                        .multilineTextAlignment(.center)
+                        
+                        // Horizontal Date Selector (No Scroll, Centered)
+                        HStack(spacing: 15) {
+                            ForEach(generateWeekDates(), id: \.self) { day in
+                                let todayString = viewmodel.updateDateString().prefix(2)
+                                let isToday = day.hasPrefix(todayString)
+                                
+                                Text(day)
+                                    .font(.subheadline.weight(isToday ? .bold : .regular))
+                                    .multilineTextAlignment(.center)
+                                    .foregroundColor(isToday ? .white : .white.opacity(0.7))
+                                    .padding(.vertical, isToday ? 8 : 0)
+                                    .padding(.horizontal, isToday ? 10 : 0)
+                                    .background(
+                                        isToday ?
+                                        Color(red: 1.0, green: 0.4, blue: 0.3)
+                                            .cornerRadius(15)
+                                            .shadow(color: Color(red: 1.0, green: 0.4, blue: 0.3, opacity: 0.5), radius: 5, x: 0, y: 2)
+                                        : nil
+                                    )
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.horizontal)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 20)
+                    .background(
+                        LinearGradient(gradient: Gradient(colors: [
+                            Color(red: 0.13, green: 0.13, blue: 0.17),
+                            Color(red: 0.09, green: 0.09, blue: 0.13).opacity(0.0)
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom)
+                    )
+                    
+                    // HABIT LIST
+                    if viewmodel.habits.isEmpty {
+                        Text("No habits yet. Add a new one to get started!")
+                            .font(.headline)
+                            .foregroundColor(.white.opacity(0.7))
+                            .padding(.horizontal)
+                    } else {
+                        LazyVStack(spacing: 20) {
+                            ForEach(viewmodel.habits) { habit in
+                                HabitButtonView(habit: habit, isEditMode: $isEditMode)
+                                    .background(Color(red: 0.13, green: 0.13, blue: 0.17))
+                                    .cornerRadius(12)
+                                    .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
+                                    .padding(.horizontal)
+                            }
+                        }
+                        .padding(.top, 10)
                     }
                     
-                    // Habit List
-                    LazyVStack(spacing: 20) {
-                        ForEach(viewmodel.habits) { habit in
-                            HabitButtonView(habit: habit, isEditMode: $isEditMode)
-                        }
-                    }
+                    // Add extra bottom padding so content doesn't get covered by bottom buttons
+                    Spacer(minLength: 100)
                 }
-                .padding()
+                .padding(.bottom, 180) // Increase this if needed for more spacing
             }
             
+            // Bottom Buttons
             VStack {
                 Spacer()
                 
-                // Add Habit Button
                 Button(action: {
                     showHabitForm.toggle()
                 }) {
-                    Image(systemName: "plus.circle.fill")
-                        .font(Font.system(size: 50))
-                        .foregroundStyle(.orange)
+                    Image(systemName: "plus")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.orange)
+                        .clipShape(Circle())
+                        .shadow(color: Color.orange.opacity(0.6), radius: 8, x: 0, y: 4)
                 }
-                .padding(.bottom, 10)
+                .padding(.bottom, 15)
                 
-                // Charts Navigation Button
                 NavigationLink(destination: ChartsView()) {
-                    HStack {
+                    HStack(spacing: 8) {
                         Image(systemName: "chart.bar.fill")
                             .foregroundColor(.orange)
                             .font(.system(size: 20))
@@ -151,9 +178,11 @@ struct HabitListView: View {
                             .foregroundColor(.orange)
                             .font(.headline)
                     }
-                    .padding()
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 12)
                     .background(Color(red: 0.13, green: 0.13, blue: 0.17))
-                    .cornerRadius(15)
+                    .cornerRadius(25)
+                    .shadow(color: .black.opacity(0.3), radius: 4, x: 0, y: 2)
                 }
                 .padding(.bottom, 30)
             }
@@ -173,8 +202,8 @@ struct HabitListView: View {
             }
         }
         .onAppear {
-            randomizeMotivationalQuote() // Set initial motivational header
-            startMotivationalQuoteTimer() // Start periodic updates
+            randomizeMotivationalQuote()
+            startMotivationalQuoteTimer()
         }
     }
     
