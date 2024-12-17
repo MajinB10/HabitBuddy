@@ -156,13 +156,23 @@ extension HabitService {
 
     // Identify best and worst days
     func getBestAndWorstDays() -> (bestDay: String, worstDay: String) {
-        guard let bestDay = habitProgress.max(by: { ($0.completedHabits * 100) / max($0.totalHabits, 1) < ($1.completedHabits * 100) / max($1.totalHabits, 1) }),
-              let worstDay = habitProgress.min(by: { ($0.completedHabits * 100) / max($0.totalHabits, 1) < ($1.completedHabits * 100) / max($1.totalHabits, 1) }) else {
-            return ("N/A", "N/A")
+        guard !habitProgress.isEmpty else { return ("N/A", "N/A") }
+
+        // Sort habitProgress by percentage completion
+        let sortedProgress = habitProgress.sorted {
+            ($0.completedHabits * 100 / max($0.totalHabits, 1)) < ($1.completedHabits * 100 / max($1.totalHabits, 1))
         }
+
+        let bestDayProgress = sortedProgress.last
+        let worstDayProgress = sortedProgress.first
+
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
-        return (formatter.string(from: bestDay.date), formatter.string(from: worstDay.date))
+
+        let bestDay = bestDayProgress.map { formatter.string(from: $0.date) } ?? "N/A"
+        let worstDay = worstDayProgress.map { formatter.string(from: $0.date) } ?? "N/A"
+
+        return (bestDay, worstDay)
     }
 
     // Individual habit progress for the week
