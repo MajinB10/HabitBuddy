@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		76BA68322D1125260079CD27 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 76BA68312D1125260079CD27 /* Lottie */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		767755482CFEA87400E51AA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -42,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76BA68322D1125260079CD27 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				767755392CFEA87100E51AA9 /* HabitBuddy */,
+				76BA68302D1125260079CD27 /* Frameworks */,
 				767755382CFEA87100E51AA9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -78,6 +84,13 @@
 				767755512CFEA87400E51AA9 /* HabitBuddyUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		76BA68302D1125260079CD27 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -100,6 +113,7 @@
 			);
 			name = HabitBuddy;
 			packageProductDependencies = (
+				76BA68312D1125260079CD27 /* Lottie */,
 			);
 			productName = HabitBuddy;
 			productReference = 767755372CFEA87100E51AA9 /* HabitBuddy.app */;
@@ -384,6 +398,7 @@
 				DEVELOPMENT_TEAM = 2BYHW87G5H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -413,6 +428,7 @@
 				DEVELOPMENT_TEAM = 2BYHW87G5H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -554,6 +570,14 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		76BA68312D1125260079CD27 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 76BA682D2D1123470079CD27 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7677552F2CFEA87100E51AA9 /* Project object */;
 }
